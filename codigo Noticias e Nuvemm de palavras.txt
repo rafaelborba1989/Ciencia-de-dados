@@ -1,0 +1,150 @@
+!pip install -U selenium
+!apt-get update
+!apt-get install -y chromium-browser
+!apt install chromium-chromedriver
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-gpu')
+driver=webdriver.Chrome(options=options)
+
+
+from selenium.webdriver.common.by import By
+
+from pandas.core.arrays import StringArray
+import pandas as pd
+import numpy as np
+import requests
+import lxml
+from bs4 import BeautifulSoup as soup
+html = requests.get('https://www.ufrn.br/imprensa/noticias/filtros?text=eaj').text
+page = soup(html, 'lxml')
+lista = page.findAll("a", element_="href")
+
+
+def textoNuvem(eaj,j):
+
+  from selenium import webdriver
+  from selenium.webdriver.chrome.service import Service
+  from selenium import webdriver
+  options = webdriver.ChromeOptions()
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-gpu')
+  driver=webdriver.Chrome(options=options)
+  from selenium.webdriver.common.by import By
+
+  url =eaj
+  driver.get(url)
+  import time
+  from selenium.webdriver.support.ui import WebDriverWait
+  url_1 = eaj
+  driver.get(url_1);
+  time.sleep(3) #esperar carregar
+  elemento = driver.find_element(By.XPATH, "//*[@id='noticias-paginacao']/li["+str(j)+"]/a")
+  elemento.click()
+  time.sleep(3) #esperar carregar
+  # uma opção é obter todo o body (ou parte mais específica) da página com o selenium/webdriver e passar ao BSoup para análise padrão
+  #print(title_news[0].get_attribute('innerHTML')) com tag_name BODY
+
+
+  title_news = driver.find_elements(By.CLASS_NAME, 'blue-link');
+  n_news = len(title_news) #quantas notícias na página atual
+  print(n_news)
+  text_to_cloud=''
+  def find(driver):
+    element = driver.find_element(By.TAG_NAME, 'content')
+
+    if element:
+        return element
+    else:
+        return False
+  texto=""
+  cont=0
+  for i in range(1,n_news):
+     #a cada volta de página necessário procurar novamente, pois perde o DOM/referência
+    title_news = driver.find_elements(By.CLASS_NAME, 'blue-link');
+    link = title_news[i].get_attribute('href')
+    link_text = title_news[i].text
+    if 'imprensa' in link:
+        # print(link)=
+        print(link_text)
+        driver.get(link)
+        time.sleep(3)
+        news_text = WebDriverWait(driver, 30).until(find)
+        texto+=news_text.text
+        print('--------------------------------------------')
+        # print(texto)
+        # print('--------------------------------------------')
+        text_to_cloud += news_text.text
+
+        driver.back()
+        time.sleep(3)
+        elemento = driver.find_element(By.XPATH, "//*[@id='noticias-paginacao']/li["+str(j)+"]/a")
+        elemento.click()
+        time.sleep(3)
+  # print(cont)
+  driver.close()
+  return texto
+
+  textoNuvem("https://www.ufrn.br/imprensa/noticias/filtros?text=eaj",6)
+
+  from pandas.core.arrays import StringArray
+  import pandas as pd
+  import numpy as np
+  import requests
+  import lxml
+  from bs4 import BeautifulSoup as soup
+  from traitlets.traitlets import default
+
+  import time
+  from selenium.webdriver.support.ui import WebDriverWait
+
+  !pip install newspaper3k
+  from newspaper import Article
+  import pandas as pd
+  import matplotlib.pyplot as plt
+  %matplotlib inline
+  import numpy as np
+  from PIL import Image
+  from selenium.common.exceptions import StaleElementReferenceException
+  dataset = open("sampleWords.txt", "r").read()
+
+  dataset = dataset.lower()
+  driver.quit()
+
+  url='https://www.ufrn.br/imprensa/noticias/filtros?text=eaj'
+  print(url)
+  article = Article(url, 'pt-br')
+  print(type(article))
+  article.download()
+  article.parse()
+  from wordcloud import WordCloud, STOPWORDS
+  STOPWORDS = ['a', 'é', 'o', 'e', 'no', 'do'
+             'para','na','ao','mais','por','não','ainda','muito','sua',
+             'ver','principal','essa','vez','com','foram','nas','mas',
+             'qual','principal','ele','ter','doença','pois','este',
+             'vez','ver principal','artigo principal','já',
+             'aos','pode','outro','artigo','desse',
+             'alguns','meio','entre','das','podem','esse',
+             'seu','também','são','quando','de', 'que','em',
+             'os','as','da','como','dos','ou','se','um','uma'
+             ]
+
+  def create_word_cloud(string,i):
+    maskArray = np.array(Image.open("cloud.jpg")) #uso do numpy
+    cloud = WordCloud(background_color = "white", max_font_size=100, max_words = 50, mask = maskArray, stopwords = set(STOPWORDS))
+    cloud.generate(string)
+    cloud.to_file("wordCloudDaPag"+str(i)+".png")
+    plt.figure()
+    plt.imshow(cloud, interpolation='bilinear')
+    plt.axis('off')
+
+ for i in range(2,6):
+    create_word_cloud(textoNuvem(url,i),i)
+
+  
+	

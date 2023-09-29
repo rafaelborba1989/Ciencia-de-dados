@@ -1,0 +1,126 @@
+!pip install html5lib
+!pip install beautifulsoup4
+!pip install lxml
+
+import pandas as pd
+import numpy as np
+import requests
+import lxml
+from bs4 import BeautifulSoup as soup
+url='https://www.loteriaseresultados.com.br/megasena/resultado/2636';
+html = requests.get(url).text
+page = soup(html, 'lxml')
+lista = page.find("td",  class_= "text-right")
+
+print(lista.string)
+
+from pandas.core.arrays import StringArray
+import pandas as pd
+import numpy as np
+import requests
+import lxml
+from bs4 import BeautifulSoup as soup
+from traitlets.traitlets import default
+
+def premios(url):
+  html = requests.get(url).text
+  page = soup(html, 'lxml')
+  lista = page.find("td",  class_= "text-right")
+
+  return lista.string;
+
+
+
+def coletor(url2, nomeConcurso, numeroConcurso):
+   html = requests.get(url2).text
+   soupPage= soup(html, 'lxml')
+   spanList = soupPage.findAll( "span",  class_="white--text font-weight-bold")
+   lista=""
+   array=[]
+   for j in spanList:
+      lista+=j.text
+      lista2=lista.replace("\n", ";")
+      premio=premios(url2)
+
+      df={
+        'Nome do Concurso':[nomeConcurso],
+        'N° do Concurso':[numeroConcurso],
+        'Bolas Sorteadas':[lista2],
+        'Premio':[premio]
+
+
+      }
+      dataFrame=pd.DataFrame(df)
+      dataFrame.to_csv('DataFrame.csv', index=False)
+
+def ConcursoIdentificacao(nomeConcurso, numeroConcurso):
+
+  match nomeConcurso:
+   case "super sete":
+    if numeroConcurso!=449:
+      print("erro no numero do concurso")
+    else:
+        url2='https://www.loteriaseresultados.com.br/supersete/resultado/449';
+        coletor(url2,nomeConcurso, numeroConcurso)
+
+   case "lotomania":
+       if numeroConcurso!=2524:
+         print("erro no numero do concurso")
+       else:
+          url2='https://www.loteriaseresultados.com.br/lotomania/resultado/2524';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "dupla sena":
+      if numeroConcurso!=2571:
+         print("erro no numero do concurso")
+      else:
+          url2='https://www.loteriaseresultados.com.br/duplasena/resultado/2571';
+          coletor(url2,nomeConcurso, numeroConcurso)
+
+   case "quina":
+      if numeroConcurso!=6249:
+         print("erro no numero do concurso")
+      else:
+         url2='https://www.loteriaseresultados.com.br/quina/resultado/6249';
+         coletor(url2,nomeConcurso, numeroConcurso)
+
+   case "lotofácil":
+        if numeroConcurso!=2912:
+         print("erro no numero do concurso")
+        else:
+          url2='https://www.loteriaseresultados.com.br/lotofacil/resultado/2912';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "mega sena":
+        if numeroConcurso!=2636:
+         print("erro no numero do concurso")
+        else:
+          url2='https://www.loteriaseresultados.com.br/megasena/resultado/2636';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "timemania":
+     if numeroConcurso!=1993:
+         print("erro no numero do concurso")
+     else:
+          url2='https://www.loteriaseresultados.com.br/timemania/resultado/1993';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "dia da sorte":
+     if numeroConcurso!=814:
+         print("erro no numero do concurso")
+     else:
+          url2='https://www.loteriaseresultados.com.br/diadasorte/resultado/814';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "loteria federal":
+     if numeroConcurso!=5802:
+         print("Erro no numero!")
+     else:
+          url2='https://www.loteriaseresultados.com.br/loteriafederal/5802';
+          coletor(url2,nomeConcurso, numeroConcurso)
+   case "loteca":
+     if numeroConcurso!=1078:
+         print("Erro!")
+     else:
+          url2='https://www.loteriaseresultados.com.br/loteca/1078';
+          coletor(url2,nomeConcurso, numeroConcurso)
+
+   case _:
+      print("Erro!!!")
+
+ConcursoIdentificacao("super sete", 449)
